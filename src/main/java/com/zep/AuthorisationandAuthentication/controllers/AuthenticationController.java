@@ -1,6 +1,8 @@
 package com.zep.AuthorisationandAuthentication.controllers;
+import com.zep.AuthorisationandAuthentication.dtos.LoginRequestDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +28,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@RequestBody RegistrationDTO body){
-        return authenticationService.loginUser(body.getEmail(), body.getPassword());
+    public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody LoginRequestDTO request) {
+        LoginResponseDTO response = authenticationService.loginUser(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(response);
     }
+
 }

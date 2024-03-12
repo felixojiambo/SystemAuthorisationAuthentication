@@ -3,11 +3,13 @@ package com.zep.AuthorisationandAuthentication.services;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import jakarta.transaction.Transactional;
 
 
 @Service
+@Slf4j
 @Transactional
 public class AuthenticationService {
 
@@ -51,20 +54,28 @@ public class AuthenticationService {
     }
 
 
-    public LoginResponseDTO loginUser(String email, String password){
-
-        try{
+    public LoginResponseDTO loginUser(String email, String password) {
+        try {
+            // Authenticate the user
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
             );
 
+            // Generate a JWT token for the authenticated user
             String token = tokenService.generateJwt(auth);
 
-            return new LoginResponseDTO(userRepository.findByEmail(email).get(), token);
+            // Retrieve the user details from the database
+            ApplicationUser user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        } catch(AuthenticationException e){
+            // Return a LoginResponseDTO that includes the user details and the token
+            return new LoginResponseDTO(user, token);
+
+        } catch (AuthenticationException e) {
+            log.error("Error {}", e);
             return new LoginResponseDTO(null, "");
         }
     }
 
 }
+
+

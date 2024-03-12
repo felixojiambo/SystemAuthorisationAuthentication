@@ -13,12 +13,12 @@ public class RegistrationDTO {
     private String firstName;
     private String lastName;
     private  String phoneNumber;
-
-    public RegistrationDTO(String email, String password){
-        super();
-        this.email = email;
-        this.password = password;
-    }
+    private String token;
+//    public RegistrationDTO(String email, String password){
+//        super();
+//        this.email = email;
+//        this.password = password;
+//    }
 
 
 
