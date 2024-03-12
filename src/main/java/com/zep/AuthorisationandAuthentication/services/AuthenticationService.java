@@ -39,28 +39,28 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
-    public ApplicationUser registerUser(String username, String password){
-
+    public ApplicationUser registerUser(String email, String password, String firstName, String lastName, String phoneNumber){
         String encodedPassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").get();
 
         Set<Role> authorities = new HashSet<>();
-
         authorities.add(userRole);
 
-        return userRepository.save(new ApplicationUser(0, username, encodedPassword, authorities));
+
+        return userRepository.save(new ApplicationUser(0, email, encodedPassword, authorities, firstName, lastName, phoneNumber));
     }
 
-    public LoginResponseDTO loginUser(String username, String password){
+
+    public LoginResponseDTO loginUser(String email, String password){
 
         try{
             Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
+                    new UsernamePasswordAuthenticationToken(email, password)
             );
 
             String token = tokenService.generateJwt(auth);
 
-            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
+            return new LoginResponseDTO(userRepository.findByEmail(email).get(), token);
 
         } catch(AuthenticationException e){
             return new LoginResponseDTO(null, "");

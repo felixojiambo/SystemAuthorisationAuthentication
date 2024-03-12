@@ -1,12 +1,14 @@
 package com.zep.AuthorisationandAuthentication.models;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,26 +20,27 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 @Entity
+@Data
 @Table(name="users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApplicationUser implements UserDetails {
+ @Setter
  @Id
  @GeneratedValue(strategy=GenerationType.AUTO)
  @Column(name="user_id")
  private Integer userId;
- 
- @Column(nullable = false)
+    @Column(unique=false)
  private String firstName;
-
- @Column(nullable = false)
+    @Column(unique=false)
  private String lastName;
- @Column(nullable = false)
- private String phoneNumber;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
 
- @Column(nullable = false, unique = true)
+    @Column(unique=true)
  private String email;
- @Column(unique=true)
- private String username;
+
  private String password;
  @ManyToMany(fetch=FetchType.EAGER)
  @JoinTable(
@@ -45,25 +48,28 @@ public class ApplicationUser implements UserDetails {
  inverseJoinColumns = {@JoinColumn(name="role_id")}
  )
  private Set<Role> authorities;
-public ApplicationUser(){
-    super();
-    this.authorities=new HashSet<>();
-}
-public ApplicationUser(Integer userId,String username,String password,Set<Role>authorities){
+
+    public ApplicationUser(Integer userId,String email,String password,Set<Role>authorities){
 super();
 this.userId=userId;
-this.username=username;
+this.email=email;
 this.password=password;
 this.authorities=authorities;
 }
-public Integer getUserId(){
-    return this.userId;
-}
-public void setUserId(Integer userId) {
 
- this.userId=userId;   
-}
-@Override
+    public ApplicationUser(int userId, String email, String encodedPassword, Set<Role> authorities, String firstName, String lastName,String phoneNumber) {
+        this.userId = userId;
+        this.email = email;
+
+        this.password = encodedPassword;
+        this.authorities = authorities;
+        this.firstName = firstName;
+        this.lastName = lastName; this.phoneNumber=phoneNumber;
+    }
+
+
+
+    @Override
 public Collection<? extends GrantedAuthority> getAuthorities() {
     
     return this.authorities;
@@ -73,17 +79,12 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
     public String getPassword() {
       return this.password;
     }
-    public void setPassword(String password){
-        this.password=password;
-    }
 
     @Override
     public String getUsername() {
-        return this.username;
+    return this.email;
     }
-public void setUsername(String username){
-    this.username=username;
-}
+
     @Override
     public boolean isAccountNonExpired() {
       return true;

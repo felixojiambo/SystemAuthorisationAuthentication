@@ -9,5 +9,5 @@ import com.zep.AuthorisationandAuthentication.models.ApplicationUser;
 @Repository
 public interface UserRepository extends JpaRepository<ApplicationUser,Integer> {
 
-    Optional<ApplicationUser> findByUsername(String username);
+    Optional<ApplicationUser> findByEmail(String email);
 }

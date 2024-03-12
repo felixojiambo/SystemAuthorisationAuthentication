@@ -1,39 +1,28 @@
 package com.zep.AuthorisationandAuthentication.dtos;
 
-import javax.print.DocFlavor.STRING;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationDTO {
-    private String username;
+    private String email;
     private String password;
+    private String firstName;
+    private String lastName;
+    private  String phoneNumber;
 
-    public RegistrationDTO(){
+    public RegistrationDTO(String email, String password){
         super();
-    }
-
-    public RegistrationDTO(String username, String password){
-        super();
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
-    public String getUsername(){
-        return this.username;
-    }
 
-    public void setUsername(String username){
-        this.username = username;
-    }
-
-    public String getPassword(){
-        return this.password;
-    }
-
-    public void setPassword(String password){
-        this.password = password;
-    }
 
     public String toString(){
-        return "Registration info: username: " + this.username + " password: " + this.password;
+        return "Registration info: username: " + this.email + " password: " + this.password;
     }
 }

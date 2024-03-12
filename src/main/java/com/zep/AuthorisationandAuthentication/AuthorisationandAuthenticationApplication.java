@@ -23,17 +23,33 @@ public class AuthorisationandAuthenticationApplication {
 	}
 
 
-@Bean
-CommandLineRunner run(RoleRepository roleRepository,UserRepository userRepository,PasswordEncoder passwordEncoder){
-	return  args ->{
+	@Bean
+	public CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+		return args -> {
+			// Check if the ADMIN role already exists
+			if (roleRepository.findByAuthority("ADMIN").isPresent()) {
+				System.out.println("ADMIN role already exists. Skipping role creation.");
+				return;
+			}
 
-		if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
-		Role adminRole=roleRepository.save(new Role("ADMIN"));
-		roleRepository.save(new Role("USER"));
-		Set<Role> roles=new HashSet<>();
-		roles.add(adminRole);
-		ApplicationUser admin=new ApplicationUser(1,"admin",passwordEncoder.encode("password"),roles);
-	userRepository.save(admin);
-	};
+			// Create and save the ADMIN role
+			Role adminRole = roleRepository.save(new Role("ADMIN"));
+			System.out.println("ADMIN role created.");
 
-}}
+			// Create and save the USER role
+			Role userRole = roleRepository.save(new Role("USER"));
+			System.out.println("USER role created.");
+
+			// Create a set of roles for the admin user
+			Set<Role> roles = new HashSet<>();
+			roles.add(adminRole);
+
+			// Create and save the admin user
+			ApplicationUser admin = new ApplicationUser(1, "admin", passwordEncoder.encode("password"), roles);
+			userRepository.save(admin);
+			System.out.println("Admin user created.");
+		};
+	}
+
+
+}
