@@ -29,10 +29,12 @@ public class AdminController {
 
     @Autowired
     private TokenService tokenService;
+
     @GetMapping("/")
-    public String helloAdminController(){
+    public String helloAdminController() {
         return "Admin Access";
     }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> loginAdmin(@RequestBody LoginRequestDTO request) {
         Optional<ApplicationUser> adminOptional = userRepository.findByEmail(request.getEmail());
@@ -56,5 +58,4 @@ public class AdminController {
         LoginResponseDTO response = new LoginResponseDTO(null, null);
         return ResponseEntity.ok(response);
     }
-
 }
