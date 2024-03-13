@@ -45,7 +45,7 @@ public class AuthorisationandAuthenticationApplication {
 			roles.add(adminRole);
 
 			// Create and save the admin user
-			ApplicationUser admin = new ApplicationUser(1, "admin", passwordEncoder.encode("password"), roles);
+			ApplicationUser admin = new ApplicationUser(1, "felix@gmail.com", passwordEncoder.encode("password"), roles);
 			userRepository.save(admin);
 			System.out.println("Admin user created.");
 		};
